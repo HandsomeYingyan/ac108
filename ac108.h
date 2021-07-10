@@ -1,6 +1,8 @@
 /*
  * ac108.h --  ac108 ALSA Soc Audio driver
  *
+ * Version: 3.0
+ *
  * Author: panjunwen
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,8 +18,7 @@
 /*** AC108 Codec Register Define***/
 
 //Chip Reset
-#define CHIP_RST			0x00
-#define CHIP_RST_VAL		0x12
+#define CHIP_AUDIO_RST		0x00
 
 //Power Control
 #define PWR_CTRL1			0x01
@@ -189,6 +190,8 @@
 #define BGTC_DAT			0xD1
 #define BGVC_DAT			0xD2
 #define PRNG_CLK_CTRL		0xDF
+
+#define AC108_REG_MAX		PRNG_CLK_CTRL
 
 
 
@@ -697,7 +700,7 @@
 #define GPIO4_SELECT			4
 #define GPIO3_SELECT			0
 
-/*GPIO_DAT*///order???
+/*GPIO_DAT*/
 #define GPIO4_DAT				3
 #define GPIO3_DAT				2
 #define GPIO2_DAT				1
@@ -721,13 +724,13 @@
 #define GPIO2_EINT_CFG			2
 #define GPIO1_EINT_CFG			0
 
-/*GPIO_INT_EN*///order???
+/*GPIO_INT_EN*/
 #define GPIO4_EINT_EN			3
 #define GPIO3_EINT_EN			2
 #define GPIO2_EINT_EN			1
 #define GPIO1_EINT_EN			0
 
-/*GPIO_INT_STATUS*///order???
+/*GPIO_INT_STATUS*/
 #define GPIO4_EINT_STA			3
 #define GPIO3_EINT_STA			2
 #define GPIO2_EINT_STA			1
@@ -765,10 +768,90 @@
 #define LEFT_JUSTIFIED_FORMAT			1
 #define RIGHT_JUSTIFIED_FORMAT			2
 
+//ADC Digital Debug Control
+#define ADC_PTN_NORMAL					0
+#define ADC_PTN_0x5A5A5A				1
+#define ADC_PTN_0x123456				2
+#define ADC_PTN_ZERO					3
+#define ADC_PTN_I2S_RX_DATA				4
 
-//I2S data protocol types
+//ADC PGA GAIN Control
+#define ADC_PGA_GAIN_0dB				0
+#define ADC_PGA_GAIN_MINUS_6dB			1
+#define ADC_PGA_GAIN_3dB				3
+#define ADC_PGA_GAIN_4dB				4
+#define ADC_PGA_GAIN_5dB				5
+#define ADC_PGA_GAIN_6dB				6
+#define ADC_PGA_GAIN_7dB				7
+#define ADC_PGA_GAIN_8dB				8
+#define ADC_PGA_GAIN_9dB				9
+#define ADC_PGA_GAIN_10dB				10
+#define ADC_PGA_GAIN_11dB				11
+#define ADC_PGA_GAIN_12dB				12
+#define ADC_PGA_GAIN_13dB				13
+#define ADC_PGA_GAIN_14dB				14
+#define ADC_PGA_GAIN_15dB				15
+#define ADC_PGA_GAIN_16dB				16
+#define ADC_PGA_GAIN_17dB				17
+#define ADC_PGA_GAIN_18dB				18
+#define ADC_PGA_GAIN_19dB				19
+#define ADC_PGA_GAIN_20dB				20
+#define ADC_PGA_GAIN_21dB				21
+#define ADC_PGA_GAIN_22dB				22
+#define ADC_PGA_GAIN_23dB				23
+#define ADC_PGA_GAIN_24dB				24
+#define ADC_PGA_GAIN_25dB				25
+#define ADC_PGA_GAIN_26dB				26
+#define ADC_PGA_GAIN_27dB				27
+#define ADC_PGA_GAIN_28dB				28
+#define ADC_PGA_GAIN_29dB				29
+#define ADC_PGA_GAIN_30dB				30
 
-#define IS_ENCODING_MODE		 0
+struct voltage_supply {
+	const char *name;
+	struct regulator *regulator;
+	unsigned int voltage;
+	unsigned int used;
+};
+
+struct gain_config {
+	unsigned int val;
+	unsigned int used;
+};
+
+struct gpio_setting {
+	unsigned int gpio;
+	unsigned int used;
+};
+
+struct ref_chip_config {
+	struct gain_config ref_pga;
+	unsigned int ref_channel;
+};
+
+struct ac108_priv {
+	struct i2c_client *i2c;
+	struct snd_soc_component *codec;
+	struct regmap *regmap;
+	unsigned int reg_dump_offset;
+	unsigned int reg_dump_count;
+
+	struct voltage_supply vol_supply;
+	struct gpio_setting power_gpio;
+	struct gpio_setting reset_gpio;
+
+	unsigned int twi_bus;
+	unsigned int pga_gain;
+	unsigned int lrck_period;
+	unsigned int slot_width;
+	struct ref_chip_config ref_cfg;
+
+	unsigned int debug_mode;
+};
+
+struct ac108_public_config {
+	unsigned int ac108_nums;
+};
 
 #endif
 

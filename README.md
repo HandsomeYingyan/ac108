@@ -1,2 +1,6 @@
-# ac108
-testing not useable for now
+# xpower ac108 codec driver 
+## Most Part form allwinner d1 kernel source
+
+## 
+
+ 

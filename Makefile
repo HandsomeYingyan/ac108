@@ -1,8 +1,7 @@
 #
-# Peter Yang <turmary@126.com>
-# Copyright (c) 2019 Seeed Studio
-#
-# MIT License
+# Copyright (C) 2020-2021 HandsomeMod Project
+# 
+# GPLV2 License
 #
 
 uname_r=$(shell uname -r)
@@ -10,11 +9,9 @@ uname_r=$(shell uname -r)
 # If KERNELRELEASE is defined, we've been invoked from the
 # kernel build system and can use its language
 ifneq ($(KERNELRELEASE),)
-# $(warning KERNELVERSION=$(KERNELVERSION))
+snd-soc-ac108-objs := ac108.o
 
-snd-soc-ac108-objs := ac108.o ac101.o
 obj-m += snd-soc-ac108.o
-
 
 ifdef DEBUG
 ifneq ($(DEBUG),0)
